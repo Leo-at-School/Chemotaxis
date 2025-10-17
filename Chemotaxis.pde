@@ -1,6 +1,6 @@
 //Physics variables
 int densityScaleFactor = 1;
-double GravitationalConstant = 66.7;
+double gravitationalConstant = 66.7;
 double timeIncrement = 0.1;
 double dragCoefficient = 1.17;
 double airDensity = 0.2;
@@ -156,7 +156,7 @@ class Body{
         distance = getDistance(externalX, externalY, this.x, this.y);
         
         //Calculate the net forces for the x and y components
-        force = (GravitationalConstant*externalMass*this.mass)/(distance*distance);
+        force = (gravitationalConstant*externalMass*this.mass)/(distance*distance);
         forceAngle = getAngle(externalX - this.x, externalY - this.y);
         netForceX = force*Math.cos(forceAngle);
         netForceY = force*Math.sin(forceAngle);
