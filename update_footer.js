@@ -30,7 +30,7 @@ function pollForProcessingSketch(event = null, calledFromTimeout = false){ //eve
 	  return;
 	}
 	
-	let currentProcessingInstanceData = currentProcessingInstance.REPLACETHIS();
+	let currentProcessingInstanceData = currentProcessingInstance.getBodyCount();
 	let processingInstanceEquality = previousProcessingInstanceData == currentProcessingInstanceData;
 	
 	//For debugging
@@ -48,16 +48,15 @@ function pollForProcessingSketch(event = null, calledFromTimeout = false){ //eve
 		return;
 	}
 	
-	updateBodyCount(currentProcessingInstance);
+	updateBodyCount(currentProcessingInstanceData);
 	
 	//Disallows the now loaded sketch to be loaded again next function call
 	previousProcessingInstanceData = currentProcessingInstanceData;
 }
 
 //Updates the span that displays the sum of all dice on the canvas
-function updateBodyCount(processingInstance){
+function updateBodyCount(bodyCount){
 	let bodyCountFooter = document.getElementById("bodyCountFooter");
-	let bodyCount = processingInstance.REPLACETHIS();
 	
 	//For debugging
 	console.log("Body count updating...");
