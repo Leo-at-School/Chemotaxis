@@ -6,6 +6,7 @@ double dragCoefficient = 1.17;
 double airDensity = 0.2;
 
 //Program's variables
+boolean keydownFlag = false; //Flag to allow only 1 exxecution per key press
 double drawSpeed = 1; //Max 1
 int bodyAmount = 5;
 int frame = 0;
@@ -54,6 +55,29 @@ void draw(){
 
 void mouseClicked(){
   setup();
+}
+
+void keyPressed(){
+  if ((key == CODED) && !keydownFlag){ //Arrow keys are special and are considered CODED and therefore need their own if statements
+    if (keyCode == UP){
+     bodyAmount += 1;
+     setup();
+    } else if (keyCode == DOWN){
+     diceSizeCurrent = max(bodyAmount - 1, 1);
+     setup();
+    }
+  }
+  
+  keydownFlag = true;
+}
+
+//Prevents code in keyPressed from executing over and over while the key is held down
+void keyReleased(){
+  if (key == CODED){ //Arrow keys are special and are considered CODED ad therefore need their own if statements
+    if (keyCode == UP || keyCode == DOWN){
+      keydownFlag = false;
+    }
+  }
 }
 
 class Body{
@@ -213,4 +237,8 @@ double getDistanceChange(double initialVelocity, double acceleration, double tim
 //The force of air resistance in a particular axis using the drag equation: F = 1/2(p*v^2*c*A)
 double getAirResistance(airDensity, airVelocity, dragCoefficient, referenceArea){
  return (airDensity*airVelocity*airVelocity*dragCoefficient*referenceArea)/2;
+}
+
+int getBodyCount(){
+  return bodyAmount;
 }
