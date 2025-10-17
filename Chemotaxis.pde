@@ -1,11 +1,16 @@
+//Physics variables
 int densityScaleFactor = 1;
 double GravitationalConstant = 66.7;
 double timeIncrement = 0.1;
+double dragCoefficient = 1.17;
+double airDensity = 0.2;
+
+//Program's variables
 double drawSpeed = 1; //Max 1
-double dragCoefficient = 0.5;
+int bodyAmount = 5;
 int frame = 0;
 
-Body[] bodiesArray = new Body[10];
+Body[] bodiesArray = new Body[bodyAmount];
 double[][] updatedBodiesComponents = new double[bodiesArray.length][4];
 
 void setup(){
@@ -44,7 +49,6 @@ void draw(){
       bodiesArray[i].updateBody(netX, netY, netVelocity, netAngle);
     }
   }
-  
   frame %= 60;
 }
 
@@ -98,8 +102,12 @@ class Body{
   }
   
   double[] moveBody(Body[] bodiesArray){
+    //Air resistance components
+    double netAirResistanceX, netAirResistanceY;
+    netAirResistanceX = getAirResistance(airDensity, this.velocityX, dragCoefficient, 2*this.radius);
+    netAirResistanceY = getAirResistance(airDensity, this.velocityY, dragCoefficient, 2*this.radius);
     
-    //A body at a certain index's components
+    //The external bodies' components
     double externalX, externalY, externalMass;
     
     //Components from the interaction between this current body and the external ones
@@ -130,10 +138,6 @@ class Body{
         netForceY = force*Math.sin(forceAngle);
       }
     }
-    netForceAngle = getAngle(netForceX, netForceY);
-    netForceX -= airResistance*Math.cos(netForceAngle);
-    netForceY -= airResistance*Math.sin(netForceAngle);
-    
     netAccelerationX = netForceX/this.mass;
     netAccelerationY = netForceY/this.mass;
     
@@ -191,18 +195,22 @@ double getAngle(double xLength, double yLength){
   }
 }
 
+//Distance between two points (x1, y1) and (x2, y2)
 double getDistance(double x1, double y1, double x2, double y2){
   return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
 }
 
+//The final velocity using the equation: v = v0 + a*t
 double getFinalVelocity(double initialVelocity, double acceleration, double time){
   return initialVelocity + acceleration*time;
 }
 
+//Displacement using the equation: delta x = v0*t + 1/2(a*t^2)
 double getDistanceChange(double initialVelocity, double acceleration, double time){
   return initialVelocity*time + (acceleration*time*time)/2;
 }
 
-double getAirResistance(dragCoefficient, airDensity, area, velocity, frontalArea){
- return;
+//The force of air resistance in a particular axis using the drag equation: F = 1/2(p*v^2*c*A)
+double getAirResistance(airDensity, airVelocity, dragCoefficient, referenceArea){
+ return (airDensity*airVelocity*airVelocity*dragCoefficient*referenceArea)/2;
 }
