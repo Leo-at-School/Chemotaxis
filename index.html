@@ -1,21 +1,44 @@
 <!DOCTYPE html>
 	<head>
 		<meta charset="utf-8">
-		<title>Title</title>
+		<title>Chemotaxis?</title>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="styles.css">
 		<script src="processing.js"></script>
 	</head>
 	<body>
 		<header>
-			<h1>Headline</h1>
+			<h1>Gravitational Interactions</h1>		
 		</header>
-			<section id="content">
-				<canvas id="Chemotaxis" data-processing-sources="Chemotaxis.pde">
-				</canvas>
-		    </section>
+		
+		<p>
+			Click to reset all the bodies with new values.<br>
+			Use arrow keys to change the amount of bodies in the system.
+		</p>
+		
+		<section id="content">
+			<canvas id="chemotaxisCanvas" data-processing-sources="Chemotaxis.pde"></canvas>
+		</section>
+		
 	    <footer>
-		    Footer
+		    <p>Amount of bodies: <span id="bodyCountFooter"></span></p>
 	    </footer>
+		
+	    <p>
+		    Technically this is not chemotaxis :(<br>
+			The system DOES use random inital values for each body however.<br>
+			AND TECHNICALLY, a system with 3 or more bodies is chaotic and unpredictable ;D
+	    </p>
+		
+		<p style="text-align: initial; font-family: initial"><i>
+			Java, Javascript, HTML, and CSS modified or created by Leo Degiovanni<br>
+			<br>
+			P.S. You can appreciate my probably faulty JavaScript with these steps:<br>
+			&nbsp;&nbsp;- Open inspect element with the Ctrl+Shift+i keyboard shortcut<br>
+			&nbsp;&nbsp;- Click on the "Sources" tab at the top (For some you may have to click on a "Debugger" tab first)<br>
+			&nbsp;&nbsp;- Click on the update_footer.js file
+		</i></p>
+		
+		<script src="update_footer.js"></script>
 	</body>
 </html>
