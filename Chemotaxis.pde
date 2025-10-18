@@ -142,8 +142,8 @@ class Body{
       }
     }
     
-    netForceX += -Math.signum(netForceX)*netAirResistanceX;
-    netForceY += -Math.signum(netForceY)*netAirResistanceY;
+    netForceX += -sign(netForceX)*netAirResistanceX;
+    netForceY += -sign(netForceY)*netAirResistanceY;
     
     netAccelerationX = netForceX/this.mass;
     netAccelerationY = netForceY/this.mass;
@@ -151,15 +151,15 @@ class Body{
     netVelocityX = getFinalVelocity(this.velocityX, netAccelerationX, timeIncrement);
     netVelocityY = getFinalVelocity(this.velocityY, netAccelerationY, timeIncrement);
     
-    if (Math.signum(netVelocityX) == 1){
+    if (sign(netVelocityX) == 1){
       netVelocityX = Math.min(netVelocityX, maxVelocityX);
-    } else if (Math.signum(netVelocityX) == -1){
+    } else if (sign(netVelocityX) == -1){
       netVelocityX = Math.max(netVelocityX, -maxVelocityX);
     }
     
-    if (Math.signum(netVelocityY) == 1){
+    if (sign(netVelocityY) == 1){
       netVelocityY = Math.min(netVelocityY, maxVelocityY);
-    } else if (Math.signum(netVelocityY) == -1){
+    } else if (sign(netVelocityY) == -1){
       netVelocityY = Math.max(netVelocityY, -maxVelocityY);
     }
     
@@ -234,4 +234,12 @@ double getDistanceChange(double initialVelocity, double acceleration, double tim
 //The force of air resistance in a particular axis using the drag equation: F = 1/2(p*v^2*c*A)
 double getAirResistance(double airDensity, double airVelocity, double dragCoefficient, double referenceArea){
  return (airDensity*airVelocity*airVelocity*dragCoefficient*referenceArea)/2;
+}
+
+int sign(double num){
+  if (num == 0){
+    return 0;
+  }
+  
+  return (int)(num/Math.abs(num));
 }
