@@ -1,7 +1,7 @@
 //Physics variables
 int densityScaleFactor = 1;
 double gravitationalConstant = 66.7;
-double timeIncrement = 0.01;
+double timeIncrement = 0.1;
 double dragCoefficient = 1.17;
 double airDensity = 0.1;
 
@@ -243,3 +243,4 @@ int sign(double num){
   
   return (int)(num/Math.abs(num));
 }
+
