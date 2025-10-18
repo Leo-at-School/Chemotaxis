@@ -60,8 +60,8 @@ void mouseClicked(){
 class Body{
   int radius;
   double x, y, mass, velocity, velocityX, velocityY, angle;
-  double maxVelocityX = 250;
-  double maxVelocityY = 250;
+  double maxVelocityX = 75;
+  double maxVelocityY = 75;
   
   Body(double initX, double initY, double initVelocity, double initAngle, int initRadius){
   
@@ -243,5 +243,6 @@ int sign(double num){
   
   return (int)(num/Math.abs(num));
 }
+
 
 
