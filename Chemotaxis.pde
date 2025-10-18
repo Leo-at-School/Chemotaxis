@@ -176,6 +176,7 @@ class Body{
   }
   
   void drawBody(){
+    noStroke();
     fill(255, 0, 0);
     ellipse((float)this.x, (float)this.y, this.radius, this.radius);
   }
@@ -243,6 +244,7 @@ int sign(double num){
   
   return (int)(num/Math.abs(num));
 }
+
 
 
 
