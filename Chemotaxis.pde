@@ -1,14 +1,14 @@
 //Physics variables
 int densityScaleFactor = 1;
 double gravitationalConstant = 66.7;
-double timeIncrement = 0.1;
+double timeIncrement = 0.01;
 double dragCoefficient = 1.17;
-double airDensity = 0.2;
+double airDensity = 0.1;
 
 //Program's variables
 boolean keydownFlag = false; //Flag to allow only 1 exxecution per key press
 double drawSpeed = 1; //Max 1
-int bodyAmount = 5;
+int bodyAmount = 7;
 int frame = 0;
 
 Body[] bodiesArray = new Body[bodyAmount];
@@ -23,9 +23,9 @@ void setup(){
   for (int i = 0; i < bodiesArray.length; i++){
     randomX = (Math.random()*3*width)/4 + width/8;
     randomY = (Math.random()*3*height)/4 + height/8;
-    randomVelocity = Math.random()*10;
+    randomVelocity = Math.random()*5;
     randomAngle = Math.random()*2*PI;
-    randomRadius = (int)(Math.random()*10 + 10);
+    randomRadius = (int)(Math.random()*20 + 10);
     
     bodiesArray[i] = new Body(randomX, randomY, randomVelocity, randomAngle, randomRadius);
   }
@@ -57,32 +57,11 @@ void mouseClicked(){
   setup();
 }
 
-void keyPressed(){
-  if ((key == CODED) && !keydownFlag){ //Arrow keys are special and are considered CODED and therefore need their own if statements
-    if (keyCode == UP){
-     bodyAmount += 1;
-     setup();
-    } else if (keyCode == DOWN){
-     diceSizeCurrent = max(bodyAmount - 1, 1);
-     setup();
-    }
-  }
-  
-  keydownFlag = true;
-}
-
-//Prevents code in keyPressed from executing over and over while the key is held down
-void keyReleased(){
-  if (key == CODED){ //Arrow keys are special and are considered CODED ad therefore need their own if statements
-    if (keyCode == UP || keyCode == DOWN){
-      keydownFlag = false;
-    }
-  }
-}
-
 class Body{
   int radius;
   double x, y, mass, velocity, velocityX, velocityY, angle;
+  double maxVelocityX = 250;
+  double maxVelocityY = 250;
   
   Body(double initX, double initY, double initVelocity, double initAngle, int initRadius){
   
@@ -135,7 +114,7 @@ class Body{
     double externalX, externalY, externalMass;
     
     //Components from the interaction between this current body and the external ones
-    double distance, force, forceAngle, netForce, netForceAngle, netAccelerationX, netAccelerationY, netVelocityX, netVelocityY;
+    double distance, force, forceAngle, netAccelerationX, netAccelerationY, netVelocityX, netVelocityY;
     
     //Final values
     double netX = this.x;
@@ -158,15 +137,31 @@ class Body{
         //Calculate the net forces for the x and y components
         force = (gravitationalConstant*externalMass*this.mass)/(distance*distance);
         forceAngle = getAngle(externalX - this.x, externalY - this.y);
-        netForceX = force*Math.cos(forceAngle);
-        netForceY = force*Math.sin(forceAngle);
+        netForceX += force*Math.cos(forceAngle);
+        netForceY += force*Math.sin(forceAngle);
       }
     }
+    
+    netForceX += -Math.signum(netForceX)*netAirResistanceX;
+    netForceY += -Math.signum(netForceY)*netAirResistanceY;
+    
     netAccelerationX = netForceX/this.mass;
     netAccelerationY = netForceY/this.mass;
     
     netVelocityX = getFinalVelocity(this.velocityX, netAccelerationX, timeIncrement);
     netVelocityY = getFinalVelocity(this.velocityY, netAccelerationY, timeIncrement);
+    
+    if (Math.signum(netVelocityX) == 1){
+      netVelocityX = Math.min(netVelocityX, maxVelocityX);
+    } else if (Math.signum(netVelocityX) == -1){
+      netVelocityX = Math.max(netVelocityX, -maxVelocityX);
+    }
+    
+    if (Math.signum(netVelocityY) == 1){
+      netVelocityY = Math.min(netVelocityY, maxVelocityY);
+    } else if (Math.signum(netVelocityY) == -1){
+      netVelocityY = Math.max(netVelocityY, -maxVelocityY);
+    }
     
     netX += getDistanceChange(this.velocityX, netAccelerationX, timeIncrement);
     netY += getDistanceChange(this.velocityY, netAccelerationY, timeIncrement);
@@ -215,6 +210,8 @@ double getAngle(double xLength, double yLength){
     return 2*PI + Math.atan(yLength/xLength);
     
   } else {
+    System.out.println(xLength);
+    System.out.println(yLength);
     throw new java.lang.RuntimeException("getAngle received an illegal value (received values it could not handle)");
   }
 }
@@ -235,10 +232,6 @@ double getDistanceChange(double initialVelocity, double acceleration, double tim
 }
 
 //The force of air resistance in a particular axis using the drag equation: F = 1/2(p*v^2*c*A)
-double getAirResistance(airDensity, airVelocity, dragCoefficient, referenceArea){
+double getAirResistance(double airDensity, double airVelocity, double dragCoefficient, double referenceArea){
  return (airDensity*airVelocity*airVelocity*dragCoefficient*referenceArea)/2;
-}
-
-int getBodyCount(){
-  return bodyAmount;
 }
